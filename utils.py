@@ -145,7 +145,9 @@ def check_accuracy(loader, model, device="cuda", show_results=False):
         #print(f"Accuracy: {sum(accuracy)/len(accuracy):.2f} | Dice score: {sum(dice_score)/len(dice_score):.2f} | Val loss: {sum(val_loss)/len(val_loss):.4f}")
         if (show_results):
             #show_images(x[0:1],model(x[0:1]),y[0],titles=["Image","Prediction","Threshold","Ground Truth"],n_cols=3)
-            show_images(x[0:1],model(x[0:1])[:,1], model(x[0:1])[:,2], model(x[0:1])[:,3], titles=["Image","Prediction C1", "Prediction C2", "Prediction C3"],n_cols=4)
+            m = nn.Softmax(dim=None)
+            smax = m(model(x[0:1]))
+            show_images(x[0:1],smax[:,1], smax[:,2], smax[:,3], titles=["Image","Prediction C1", "Prediction C2", "Prediction C3"],n_cols=4)
             print(model(x[0:1]).shape)
     model.train()
     return sum(val_loss)/len(val_loss)
