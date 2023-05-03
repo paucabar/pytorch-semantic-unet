@@ -149,7 +149,7 @@ def check_accuracy(loader, model, device="cuda", show_results=False):
             m = nn.Softmax(dim=None)
             smax = m(model(x[0:1]))
             argmax = torch.argmax(smax, dim=1)
-            show_images(x[0:1], y, argmax, smax[:,1], smax[:,2], smax[:,3], titles=["Image", "Target", "Prediction", "Myelin Probability", "Tongue Probability", "Axon Probability"],n_cols=3)
+            show_images(x[0:1], y[0:1], argmax, smax[:,1], smax[:,2], smax[:,3], smax[:,4], titles=["Image", "Target", "Prediction", "Myelin Probability", "Tongue Probability", "AxonM Probability", "AxonNM Probability"],n_cols=3)
     model.train()
     return sum(val_loss)/len(val_loss)
     
