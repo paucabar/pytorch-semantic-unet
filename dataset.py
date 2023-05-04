@@ -3,11 +3,6 @@ from PIL import Image
 from torch.utils.data import Dataset
 import numpy as np
 
-import os
-from PIL import Image
-from torch.utils.data import Dataset
-import numpy as np
-
 class BinaryDataset(Dataset):
     def __init__(self, image_dir, mask_dir, transform=None, cache=False):
         self.image_dir = image_dir
