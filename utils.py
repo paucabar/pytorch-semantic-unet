@@ -122,7 +122,7 @@ def evaluation_fn(x, y, model):
 
 
 def check_accuracy(loader, model, device="cuda", show_results=False):
-    model.eval()
+    #model.eval()
     val_loss= []
     accuracy = []
     dice_score = []
