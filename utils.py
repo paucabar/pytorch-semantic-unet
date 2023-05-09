@@ -77,11 +77,13 @@ def get_loaders(
     val_transform,
     num_workers=4,
     pin_memory=True,
+    cache=False,
 ):
     train_ds = BinaryDataset(
         image_dir=train_dir,
         mask_dir=train_maskdir,
         transform=train_transform,
+        cache=cache,
     )
 
     train_loader = DataLoader(
@@ -96,6 +98,7 @@ def get_loaders(
         image_dir=val_dir,
         mask_dir=val_maskdir,
         transform=val_transform,
+        cache=cache,
     )
 
     val_loader = DataLoader(
