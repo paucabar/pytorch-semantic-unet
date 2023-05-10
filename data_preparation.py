@@ -3,8 +3,9 @@ from skimage import io
 from glob import glob
 from shutil import copyfile
 import random
-
-from utils import fill_labels
+from utils import (
+    fill_labels,
+)
 
 def shuffle_tuples_in_list(list1, list2, list3):
     assert len(list1) == len(list2) == len(list3)
@@ -55,6 +56,7 @@ def create_train_val_test_split(in_folder, out_folder):
         # fill holes on instance labels
         label_image = io.imread(label)
         filled_label = fill_labels(label_image)
+        #filled_label = set_glasbey_cmap(filled_label)
         io.imsave(os.path.join(label_out, os.path.split(label)[1]), filled_label, check_contrast=False)
 
 def main():
