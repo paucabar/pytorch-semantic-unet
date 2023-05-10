@@ -3,6 +3,7 @@ from skimage import io
 from glob import glob
 from shutil import copyfile
 import random
+import time
 from utils import (
     fill_labels,
 )
@@ -28,7 +29,7 @@ def create_train_val_test_split(in_folder, out_folder):
     os.makedirs(out_folder, exist_ok=True)
 
     image_paths, mask_paths, label_paths = shuffle_tuples_in_list(image_paths, mask_paths, label_paths)
-    print(list(zip(image_paths, mask_paths, label_paths)))
+    #print(list(zip(image_paths, mask_paths, label_paths)))
 
     # % to split dataset
     perc_train = 0.5
@@ -54,8 +55,11 @@ def create_train_val_test_split(in_folder, out_folder):
         #copyfile(label, os.path.join(label_out, os.path.split(label)[1]))
 
         # fill holes on instance labels
+        start = time.time()
         label_image = io.imread(label)
         filled_label = fill_labels(label_image)
+        end = time.time()
+        print(f"Elapsed time for {os.path.split(image)[1]}: {end - start} seconds")
         #filled_label = set_glasbey_cmap(filled_label)
         io.imsave(os.path.join(label_out, os.path.split(label)[1]), filled_label, check_contrast=False)
 
