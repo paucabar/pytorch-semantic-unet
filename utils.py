@@ -3,6 +3,8 @@ import torchvision
 from dataset import BinaryDataset
 from torch.utils.data import DataLoader
 
+from skimage.measure import regionprops
+from scipy import ndimage
 from matplotlib.colors import LinearSegmentedColormap
 import colorcet as cc
 import matplotlib as mpl
@@ -156,6 +158,32 @@ def check_accuracy(loader, model, device="cuda", show_results=False):
     model.train()
     return sum(val_loss)/len(val_loss)
     
+
+# Methods to fill holes on label image
+# Converts a single label into a binary mask and fills its holes
+def fill_mask(image, label_id):   
+    binary_label_id = np.where(image == label_id, 1, 0) # crates binary image containing only the specified label
+    filled = ndimage.binary_fill_holes(binary_label_id) # fills the binary mask
+    filled_label_id = np.where(filled == 1, label_id, 0) # creates label image containing only the specified label after filling
+
+    return filled_label_id
+
+# Fill the holes on all the masks contained in a label image
+def fill_labels(image):
+    filled_labels_list = [] # creates empty list to save images of the filled labels
+    regions = regionprops(image)
+
+    # fills every label and stores them as individual images
+    for i in range(len(regions)):
+        label_id = regions[i].label # gets the label id of the current region
+        filleded_label = fill_mask(image, label_id) # creates label image containing only the specified label after filling
+        filled_labels_list.append(filleded_label) # stores the image on the list
+
+    # reconstructs the label image, now containing the filled labels
+    filleded_labels_stack = np.stack(filled_labels_list) # creates stack from list of images (numpy arrays)
+    image_filled = np.max(filleded_labels_stack, axis = 0) # calculates the maximum projection to get back a 2D, labelled image
+
+    return image_filled
 
 def save_predictions_as_imgs(
     loader, model, folder="saved_images/", device="cuda"
