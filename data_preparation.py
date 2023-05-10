@@ -1,7 +1,10 @@
 import os
+from skimage import io
 from glob import glob
 from shutil import copyfile
 import random
+
+from utils import fill_labels
 
 def shuffle_tuples_in_list(list1, list2, list3):
     assert len(list1) == len(list2) == len(list3)
@@ -47,7 +50,12 @@ def create_train_val_test_split(in_folder, out_folder):
         os.makedirs(label_out, exist_ok=True)
         copyfile(image, os.path.join(image_out, os.path.split(image)[1]))
         copyfile(mask, os.path.join(mask_out, os.path.split(mask)[1]))
-        copyfile(label, os.path.join(label_out, os.path.split(label)[1]))
+        #copyfile(label, os.path.join(label_out, os.path.split(label)[1]))
+
+        # fill holes on instance labels
+        label_image = io.imread(label)
+        filled_label = fill_labels(label_image)
+        io.imsave(os.path.join(label_out, os.path.split(label)[1]), filled_label, check_contrast=False)
 
 def main():
     create_train_val_test_split("data_pre", "data")
