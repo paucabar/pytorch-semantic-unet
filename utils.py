@@ -185,12 +185,20 @@ def fill_labels(image):
 
     return image_filled
 
+# Set glasbey cmap on image (returns RGB)
 def set_glasbey_cmap(image):
     l=cc.cm.glasbey_bw_minc_20_minl_30_r.colors            
     l[0]=[0,0,0]
     cmap_lab = LinearSegmentedColormap.from_list('my_list', l, N=1000)
     colored_image = np.uint8(cmap_lab(image) * 255)
     return colored_image
+
+# Get glasbey cmap
+def get_glasbey_cmap():
+    l=cc.cm.glasbey_bw_minc_20_minl_30_r.colors            
+    l[0]=[0,0,0]
+    cmap_glasbey = LinearSegmentedColormap.from_list('my_list', l, N=1000)
+    return cmap_glasbey
 
 def save_predictions_as_imgs(
     loader, model, folder="saved_images/", device="cuda"
