@@ -5,6 +5,7 @@ from torch.utils.data import DataLoader
 
 from skimage.measure import regionprops
 from scipy import ndimage
+from scipy.ndimage.morphology import distance_transform_edt
 from matplotlib.colors import LinearSegmentedColormap
 import colorcet as cc
 import matplotlib as mpl
@@ -184,6 +185,31 @@ def fill_labels(image):
     image_filled = np.max(filleded_labels_stack, axis = 0) # calculates the maximum projection to get back a 2D, labelled image
 
     return image_filled
+
+# Methods to compute distance transforms on label image
+# Converts a single label into a binary mask and gets the distance transform
+def dist_trans_mask(image, label_id):   
+    binary_label_id = np.where(image == label_id, 1, 0) # crates binary image containing only the specified label
+    dist_trans = distance_transform_edt(binary_label_id) # gets the distance transform of the binary mask
+    
+    return dist_trans
+
+# get the distance transforms from all the masks contained in a label image
+def dist_trans_labels(image):
+    dist_trans_list = [] # creates empty list to save images of individual distance transforms
+    regions = regionprops(image)
+
+    # gets the image transform of every label and stores them as individual images
+    for i in range(len(regions)):
+        label_id = regions[i].label # gets the label id of the current region
+        dist_trans_label = dist_trans_mask(image, label_id) # creates image containing only the specified distance transform
+        dist_trans_list.append(dist_trans_label) # stores the image on the list
+
+    # generates a new image containing all the distance transforms
+    dist_trans_stack = np.stack(dist_trans_list) # creates stack from list of images (numpy arrays)
+    image_dist_trans = np.max(dist_trans_stack, axis = 0) # calculates the maximum projection to get back a 2D image
+
+    return image_dist_trans
 
 # Set glasbey cmap on image (returns RGB)
 def set_glasbey_cmap(image):
