@@ -1,1 +1,1 @@
-# pytorch_unet_deep_aimseg
+# pytorch-semantic-unet
